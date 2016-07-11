@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script>
+    </head>
+    <body ng-app="myGIIS" ng-controller="indexCtr">
+
+        <div ng-repeat="s in size">
+            {{s.size}}:<input type="checkbox" ng-model="s.flag">
+        </div>
+
+        <div ng-repeat="s in color">
+            {{s.color}}:<input type="checkbox" ng-model="s.flag">
+        </div>
+
+
+        <div ng-repeat="p in product| productFilter:size:color">
+            Name: {{p.name}}<br>
+            Color: {{p.color}}<br>
+            Size: {{p.size}}
+            <br><br>
+        </div>
+
+        <script>
+                    var g_size = [];
+                    var g_color = [];
+                    angular.module("myGIIS", [])
+                            .filter('productFilter', function () {
+
+                                return function (product, size, color) {
+                                    var out = product;
+                                    console.log(angular.equals(g_size,size));
+                                    if (!(angular.equals(g_size,size))) {
+                                        out = product.filter(function (obj) {
+                                            var flag = false;
+                                            //SIZE
+                                            angular.forEach(size, function (v) {
+                                                if (v.flag && (v.size === obj.size)) {
+                                                    flag = true;
+                                                }
+                                            });
+                                            return flag;
+                                        });
+                                    }
+
+                                  if (!(angular.equals(g_color,color))) {
+                                        out = out.filter(function (obj) {
+                                            var flag = false;
+                                            //SIZE
+                                            angular.forEach(color, function (v) {
+                                                if (v.flag && (v.color === obj.color)) {
+                                                    flag = true;
+                                                }
+                                            });
+                                            return flag;
+                                        });
+                                    }
+                                    return out;
+                                }
+
+
+                            })
+                            .controller("indexCtr", ["$scope", function ($scope) {
+
+                                    $scope.size = [{size: "s", flag: false}, {size: "m", flag: false}, {size: "l", flag: false}, {size: "xl", flag: false}];
+                                    angular.copy($scope.size, g_size);
+                                    $scope.color = [{color: "red", flag: false}, {color: "green", flag: false}, {color: "blue", flag: false}];
+                                    angular.copy($scope.color, g_color);
+
+                                    $scope.product = [
+                                        {
+                                            name: "product 1",
+                                            color: "red",
+                                            size: "s"
+                                        },
+                                        {
+                                            name: "product 2",
+                                            color: "red",
+                                            size: "l"
+                                        },
+                                        {
+                                            name: "product 3",
+                                            color: "green",
+                                            size: "xl"
+                                        },
+                                        {
+                                            name: "product 4",
+                                            color: "green",
+                                            size: "s"
+                                        },
+                                        {
+                                            name: "product 5",
+                                            color: "green",
+                                            size: "m"
+                                        },
+                                        {
+                                            name: "product 6",
+                                            color: "blue",
+                                            size: "s"
+                                        },
+                                        {
+                                            name: "product 7",
+                                            color: "blue",
+                                            size: "xl"
+                                        },
+                                        {
+                                            name: "product 8",
+                                            color: "blue",
+                                            size: "xl"
+                                        }
+                                    ];
+                                }]);
+
+        </script>
+
+
+    </body>
+</html>
