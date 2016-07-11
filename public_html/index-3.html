@@ -12,7 +12,7 @@
             {{s.size}} :<input type="checkbox" ng-model="s.flag">                
         </div>
         <hr>
-        <div ng-repeat="s in filterParam.color">
+        <div ng-repeat="s in filterParam.color" style="cursor: pointer;">
             <div style="width: 22px;height: 22px;border-radius: 100%;background-color: {{s.color}}" ng-click="checkOn(s)">
                 <img src="icons/check.svg" ng-if="s.flag">
             </div>
