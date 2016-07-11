@@ -69,6 +69,8 @@
                                     angular.copy($scope.size, g_size);
                                     $scope.color = [{color: "red", flag: false}, {color: "green", flag: false}, {color: "blue", flag: false}];
                                     angular.copy($scope.color, g_color);
+                                    
+                                    $scope.filterParam={size:[],color:{};
 
                                     $scope.product = [
                                         {
@@ -112,6 +114,9 @@
                                             size: "xl"
                                         }
                                     ];
+                                    
+                                    $scope.product.map()
+                                    
                                 }]);
 
         </script>
