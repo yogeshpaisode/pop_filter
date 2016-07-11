@@ -9,7 +9,7 @@
 
 
         <div ng-repeat="s in filterParam.size">            
-            {{s.size}} :<input type="checkbox" ng-model="s.flag">                
+            {{s.size|uppercase}} :<input type="checkbox" ng-model="s.flag">                
         </div>
         <hr>
         <div ng-repeat="s in filterParam.color" style="cursor: pointer;">
