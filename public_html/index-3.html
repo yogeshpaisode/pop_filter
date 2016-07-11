@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script>
+    </head>
+    <body ng-app="myGIIS" ng-controller="indexCtr" ng-init="initData();">
+
+
+        <div ng-repeat="s in filterParam.size">            
+            {{s.size}} :<input type="checkbox" ng-model="s.flag">                
+        </div>
+        <hr>
+        <div ng-repeat="s in filterParam.color">
+            <div style="width: 22px;height: 22px;border-radius: 100%;background-color: {{s.color}}" ng-click="checkOn(s)">
+                <img src="icons/check.svg" ng-if="s.flag">
+            </div>
+        </div>
+        <hr>
+        <div ng-repeat="s in filterParam.price">
+            {{s.range}}:<input type="checkbox" ng-model="s.flag" name="price">
+        </div>
+        <hr>
+        <h4>{{filterParam}}</h4>
+
+        <div ng-repeat="p in product| productFilter:filterParam.size:filterParam.color:filterParam.price">
+            Name: {{p.name}}<br>
+            Color: {{p.color}}<br>
+            Size: {{p.size}}<br>
+            Price: Rs {{p.price}} /-
+            <br><br>
+        </div>
+
+        <script>
+                    var g_size = [];
+                    var g_color = [];
+                    var g_price = [];
+                    angular.module("myGIIS", [])
+                            .filter('productFilter', function () {
+
+                                return function (product, size, color, price) {
+                                    var out = product;
+                                    if (!(angular.equals(g_size, size))) {
+                                        out = product.filter(function (obj) {
+                                            var flag = false;
+                                            //SIZE
+                                            angular.forEach(size, function (v) {
+                                                if (v.flag && (v.size === obj.size)) {
+                                                    flag = true;
+                                                }
+                                            });
+                                            return flag;
+                                        });
+                                    }
+
+                                    if (!(angular.equals(g_color, color))) {
+                                        out = out.filter(function (obj) {
+                                            var flag = false;
+                                            //SIZE
+                                            angular.forEach(color, function (v) {
+                                                if (v.flag && (v.color === obj.color)) {
+                                                    flag = true;
+                                                }
+                                            });
+                                            return flag;
+                                        });
+                                    }
+
+                                    if (!(angular.equals(g_price, price))) {
+                                        out = out.filter(function (obj) {
+                                            var flag = false;
+                                            //SIZE
+                                            angular.forEach(price, function (v) {
+                                                if (v.flag && (obj.price >= v.min && obj.price <= v.max)) {
+                                                    flag = true;
+                                                }
+                                            });
+                                            return flag;
+                                        });
+                                    }
+
+                                    return out;
+                                }
+
+
+                            })
+                            .controller("indexCtr", ["$scope", function ($scope) {
+                                    $scope.filterParam = {size: [], color: [],
+                                        price: [
+                                            {
+                                                flag: false,
+                                                range: "100-299",
+                                                min: 100, max: 299
+                                            },
+                                            {
+                                                flag: false,
+                                                range: "300-499",
+                                                min: 300, max: 499
+                                            },
+                                            {
+                                                flag: false,
+                                                range: "500-999",
+                                                min: 500, max: 999
+                                            }
+                                        ]
+                                    };
+
+                                    $scope.product = [
+                                        {
+                                            name: "product 1",
+                                            color: "red",
+                                            size: "s",
+                                            price: "300"
+                                        },
+                                        {
+                                            name: "product 2",
+                                            color: "red",
+                                            size: "l",
+                                            price: "200"
+                                        },
+                                        {
+                                            name: "product 3",
+                                            color: "green",
+                                            size: "xl",
+                                            price: "320"
+                                        },
+                                        {
+                                            name: "product 4",
+                                            color: "green",
+                                            size: "s",
+                                            price: "250"
+                                        },
+                                        {
+                                            name: "product 5",
+                                            color: "gray",
+                                            size: "m",
+                                            price: "400"
+                                        },
+                                        {
+                                            name: "product 6",
+                                            color: "blue",
+                                            size: "s",
+                                            price: "620"
+                                        },
+                                        {
+                                            name: "product 7",
+                                            color: "blue",
+                                            size: "xl",
+                                            price: "800"
+                                        },
+                                        {
+                                            name: "product 8",
+                                            color: "blue",
+                                            size: "xxl",
+                                            price: "380"
+                                        }
+                                    ];
+
+
+                                    $scope.initData = function () {
+
+                                        $scope.product.map(function (obj) {
+                                            var data = {flag: false, size: obj.size};
+                                            var flag = false;
+                                            for (var i = 0; i < $scope.filterParam.size.length; i++) {
+                                                if ($scope.filterParam.size[i].size === obj.size) {
+                                                    flag = true;
+                                                    break;
+                                                }
+                                            }
+                                            if (!flag) {
+                                                $scope.filterParam.size.push(data);
+                                            }
+
+                                            data = {flag: false, color: obj.color};
+                                            flag = false;
+
+                                            for (var i = 0; i < $scope.filterParam.color.length; i++) {
+                                                if ($scope.filterParam.color[i].color === obj.color) {
+                                                    flag = true;
+                                                    break;
+                                                }
+                                            }
+                                            if (!flag) {
+                                                $scope.filterParam.color.push(data);
+                                            }
+                                        });
+                                        angular.copy($scope.filterParam.size, g_size);
+                                        angular.copy($scope.filterParam.color, g_color);
+                                        angular.copy($scope.filterParam.price, g_price);
+                                    }//End of init
+
+                                    $scope.checkOn = function (obj) {
+                                        if (obj.flag) {
+                                            obj.flag = false;
+                                        } else {
+                                            obj.flag = true;
+                                        }
+                                    }
+
+
+                                }]);
+
+        </script>
+
+
+    </body>
+</html>
